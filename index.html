@@ -3,41 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="بوابة معرفية مستقلة حول اتحاد المغرب العربي ودول شمال إفريقيا.">
-<title>اتحاد المغرب العربي | MAGHREB UNION</title>
+
+<title>MAGHREB UNION</title>
+
+<meta name="description" content="بوابة معرفية مستقلة حول دول المغرب العربي والتكامل الإقليمي.">
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
 *{box-sizing:border-box}
+
 body{
 margin:0;
 font-family:Arial,sans-serif;
-background:#f4f7f5;
-color:#24352c;
+background:#f3f6f3;
+color:#26382e;
 line-height:1.8;
 }
+
 header{
-background:linear-gradient(120deg,#06452f,#087a50);
+background:linear-gradient(120deg,#06452f,#087b50);
 color:white;
 text-align:center;
-padding:35px 15px;
+padding:30px 15px;
 }
-.logo{
-font-size:45px;
+
+.logo{font-size:48px}
+
+header h1{
+font-size:30px;
+margin:5px;
 }
-header h1{margin:5px;font-size:30px}
+
 header p{margin:5px}
-.lang{
-margin-top:15px;
+
+select{
 padding:10px;
 border-radius:7px;
 border:0;
+margin-top:15px;
 font-size:15px;
 }
+
 nav{
-background:#063d2c;
+background:#063c2b;
 padding:12px;
 text-align:center;
 }
+
 nav a{
 color:white;
 text-decoration:none;
@@ -45,17 +59,24 @@ margin:8px;
 display:inline-block;
 font-size:14px;
 }
+
 .hero{
-background:linear-gradient(120deg,#dcefe4,#f5f7df);
+background:linear-gradient(120deg,#dcefe4,#f4f3df);
+padding:55px 15px;
 text-align:center;
-padding:55px 20px;
 }
-.hero h2{font-size:27px;color:#075b3c}
+
+.hero h2{
+color:#075b3c;
+font-size:27px;
+}
+
 .container{
 max-width:1100px;
 margin:auto;
-padding:20px;
+padding:18px;
 }
+
 .card{
 background:white;
 padding:23px;
@@ -63,46 +84,68 @@ margin:20px 0;
 border-radius:12px;
 box-shadow:0 3px 12px #ddd;
 }
+
 h2{color:#087347}
+
 .countries{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-gap:15px;
+grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+gap:14px;
 }
+
 .country{
 background:#e8f3ec;
-padding:20px;
+padding:18px;
 text-align:center;
 border-radius:10px;
-font-weight:bold;
 font-size:18px;
+font-weight:bold;
 }
+
 .country span{
 display:block;
-font-size:35px;
+font-size:38px;
 }
+
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
 gap:15px;
 }
+
 .info{
 background:#edf4ef;
-padding:20px;
+padding:18px;
 border-radius:10px;
 }
+
+#map{
+height:430px;
+width:100%;
+border-radius:12px;
+z-index:1;
+}
+
+#country-info{
+background:#e8f3ec;
+padding:15px;
+margin-top:15px;
+border-radius:10px;
+}
+
 footer{
-background:#063d2c;
+background:#063c2b;
 color:white;
 text-align:center;
 padding:25px;
 margin-top:30px;
 }
-button{cursor:pointer}
+
 @media(max-width:600px){
 header h1{font-size:24px}
 .hero h2{font-size:22px}
-nav a{margin:5px}
+nav a{margin:5px;font-size:13px}
+#map{height:350px}
 }
 </style>
 </head>
@@ -111,10 +154,14 @@ nav a{margin:5px}
 
 <header>
 <div class="logo">🌍</div>
-<h1 id="title">اتحاد المغرب العربي</h1>
-<p id="subtitle">نحو فضاء مغاربي متكامل ومتعاون</p>
 
-<select class="lang" id="language" onchange="changeLanguage()">
+<h1 id="title">اتحاد المغرب العربي</h1>
+
+<p id="subtitle">
+نحو فضاء مغاربي متكامل ومتعاون
+</p>
+
+<select id="language" onchange="changeLanguage()">
 <option value="ar">العربية</option>
 <option value="fr">Français</option>
 <option value="en">English</option>
@@ -123,83 +170,151 @@ nav a{margin:5px}
 </header>
 
 <nav>
-<a href="#about" id="n1">التعريف</a>
-<a href="#countries" id="n2">الدول</a>
-<a href="#economy" id="n3">الاقتصاد</a>
-<a href="#future" id="n4">المستقبل</a>
-<a href="#sahara" id="n5">الصحراء الغربية</a>
+<a href="#about" id="nav1">التعريف</a>
+<a href="#countries" id="nav2">الدول</a>
+<a href="#map-section" id="nav3">الخريطة</a>
+<a href="#economy" id="nav4">الاقتصاد</a>
+<a href="#sahara" id="nav5">الصحراء الغربية</a>
+<a href="#future" id="nav6">المستقبل</a>
 </nav>
 
 <section class="hero">
-<h2 id="heroTitle">المغرب العربي: تاريخ مشترك ومستقبل مشترك</h2>
-<p id="heroText">من أجل التعاون والتنمية والتكامل بين شعوب المنطقة.</p>
+<h2 id="hero-title">
+المغرب العربي: تاريخ مشترك ومستقبل مشترك
+</h2>
+
+<p id="hero-text">
+من أجل التعاون والتنمية والتكامل بين شعوب المنطقة.
+</p>
 </section>
 
 <div class="container">
 
 <section class="card" id="about">
-<h2 id="aboutTitle">عن اتحاد المغرب العربي</h2>
-<p id="aboutText">
-تأسس اتحاد المغرب العربي في 17 فبراير 1989 بمدينة مراكش،
+<h2 id="about-title">عن اتحاد المغرب العربي</h2>
+
+<p id="about-text">
+تأسس اتحاد المغرب العربي في 17 فبراير 1989 بمدينة مراكش.
 ويضم خمس دول مؤسسة هي الجزائر والمغرب وتونس وليبيا وموريتانيا.
 ويهدف إلى تعزيز التعاون والتكامل الاقتصادي والسياسي والاجتماعي.
 </p>
 </section>
 
 <section class="card" id="countries">
-<h2 id="countriesTitle">الدول المؤسسة</h2>
+<h2 id="countries-title">الدول المؤسسة</h2>
+
 <div class="countries">
-<div class="country"><span>🇩🇿</span>الجزائر</div>
-<div class="country"><span>🇲🇦</span>المغرب</div>
-<div class="country"><span>🇹🇳</span>تونس</div>
-<div class="country"><span>🇱🇾</span>ليبيا</div>
-<div class="country"><span>🇲🇷</span>موريتانيا</div>
+
+<div class="country">
+<span>🇩🇿</span>
+الجزائر
+</div>
+
+<div class="country">
+<span>🇲🇦</span>
+المغرب
+</div>
+
+<div class="country">
+<span>🇹🇳</span>
+تونس
+</div>
+
+<div class="country">
+<span>🇱🇾</span>
+ليبيا
+</div>
+
+<div class="country">
+<span>🇲🇷</span>
+موريتانيا
+</div>
+
 </div>
 </section>
 
+<section class="card" id="map-section">
+
+<h2 id="map-title">🗺️ الخريطة التفاعلية</h2>
+
+<p id="map-description">
+اضغط على إحدى العواصم لمعرفة المزيد عن الدولة.
+</p>
+
+<div id="map"></div>
+
+<div id="country-info">
+اختر إحدى العواصم على الخريطة.
+</div>
+
+</section>
+
 <section class="card" id="economy">
-<h2 id="economyTitle">المقومات الاقتصادية</h2>
+
+<h2 id="economy-title">المقومات الاقتصادية</h2>
+
 <div class="grid">
+
 <div class="info">
-<h3>🛢️ الطاقة</h3>
-<p id="energy">موارد النفط والغاز وإمكانات الطاقة المتجددة.</p>
+<h3>🛢️ <span id="energy-title">الطاقة</span></h3>
+<p id="energy-text">
+موارد النفط والغاز وإمكانات الطاقة المتجددة.
+</p>
 </div>
+
 <div class="info">
-<h3>🌾 الزراعة</h3>
-<p id="agriculture">الأراضي الزراعية والثروات الحيوانية والسمكية.</p>
+<h3>🌾 <span id="agri-title">الزراعة</span></h3>
+<p id="agri-text">
+الأراضي الزراعية والثروات الحيوانية والسمكية.
+</p>
 </div>
+
 <div class="info">
-<h3>🏭 الصناعة</h3>
-<p id="industry">فرص تطوير الصناعة والتبادل التجاري والاستثمار.</p>
+<h3>🏭 <span id="industry-title">الصناعة</span></h3>
+<p id="industry-text">
+فرص تطوير الصناعة والتبادل التجاري والاستثمار.
+</p>
 </div>
+
 <div class="info">
-<h3>🚢 التجارة</h3>
-<p id="trade">الموانئ والممرات التجارية والربط الإقليمي.</p>
+<h3>🚢 <span id="trade-title">التجارة</span></h3>
+<p id="trade-text">
+الموانئ والممرات التجارية والربط الإقليمي.
+</p>
 </div>
+
 </div>
 </section>
 
 <section class="card" id="sahara">
-<h2 id="saharaTitle">ملف الصحراء الغربية</h2>
-<p id="saharaText">
-يُعد ملف الصحراء الغربية من القضايا السياسية الرئيسية في المنطقة.
-يتناول هذا القسم خلفية النزاع، تطوراته، المواقف الدولية،
-والجهود الأممية الرامية إلى التوصل إلى حل سياسي.
+
+<h2 id="sahara-title">ملف الصحراء الغربية</h2>
+
+<p id="sahara-text">
+تُعد قضية الصحراء الغربية من القضايا السياسية الرئيسية
+في المنطقة. يتناول هذا القسم خلفية النزاع وتطوراته
+والمواقف الدولية والجهود الأممية الرامية إلى التوصل
+إلى حل سياسي وفق قرارات الأمم المتحدة.
 </p>
+
 </section>
 
 <section class="card" id="future">
-<h2 id="futureTitle">مستقبل التكامل المغاربي</h2>
-<p id="futureText">
+
+<h2 id="future-title">مستقبل التكامل المغاربي</h2>
+
+<p id="future-text">
 يمكن للتعاون الإقليمي أن يفتح آفاقاً واسعة للتنمية،
 وتسهيل التجارة، وتطوير البنية التحتية،
 وتعزيز الحوار والتفاهم بين شعوب المنطقة.
 </p>
+
 </section>
 
 <section class="card">
-<h2 id="missionTitle">رسالتنا</h2>
-<p id="missionText">
+<h2 id="mission-title">رسالتنا</h2>
+
+<p id="mission-text">
 تقديم معلومات ومعارف موثوقة ومحايدة حول دول المغرب العربي،
 وتعزيز الحوار والتعاون والتكامل الإقليمي.
 </p>
@@ -208,114 +323,283 @@ nav a{margin:5px}
 </div>
 
 <footer>
-<p>🌍 MAGHREB UNION</p>
-<p id="footerText">بوابة معرفية مستقلة حول المغرب العربي</p>
-<p>© 2026 - MAGHREB UNION</p>
+<h3>🌍 MAGHREB UNION</h3>
+<p id="footer-text">
+بوابة معرفية مستقلة حول المغرب العربي
+</p>
+<p>© 2026 MAGHREB UNION</p>
 </footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
+
+// بيانات الخريطة
+
+const countries = [
+{
+id:"dz",
+ar:"الجزائر",
+fr:"Algérie",
+en:"Algeria",
+es:"Argelia",
+capital:{ar:"الجزائر العاصمة",fr:"Alger",en:"Algiers",es:"Argel"},
+lat:36.75,
+lng:3.05
+},
+{
+id:"ma",
+ar:"المغرب",
+fr:"Maroc",
+en:"Morocco",
+es:"Marruecos",
+capital:{ar:"الرباط",fr:"Rabat",en:"Rabat",es:"Rabat"},
+lat:34.02,
+lng:-6.84
+},
+{
+id:"tn",
+ar:"تونس",
+fr:"Tunisie",
+en:"Tunisia",
+es:"Túnez",
+capital:{ar:"تونس",fr:"Tunis",en:"Tunis",es:"Túnez"},
+lat:36.80,
+lng:10.18
+},
+{
+id:"ly",
+ar:"ليبيا",
+fr:"Libye",
+en:"Libya",
+es:"Libia",
+capital:{ar:"طرابلس",fr:"Tripoli",en:"Tripoli",es:"Trípoli"},
+lat:32.88,
+lng:13.19
+},
+{
+id:"mr",
+ar:"موريتانيا",
+fr:"Mauritanie",
+en:"Mauritania",
+es:"Mauritania",
+capital:{ar:"نواكشوط",fr:"Nouakchott",en:"Nouakchott",es:"Nuakchot"},
+lat:18.07,
+lng:-15.97
+}
+];
+
+// إنشاء الخريطة
+
+const map = L.map('map').setView([29,-3],4);
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+maxZoom:18,
+attribution:'© OpenStreetMap contributors'
+}
+).addTo(map);
+
+// إضافة العواصم
+
+countries.forEach(country=>{
+
+const marker = L.marker([
+country.lat,
+country.lng
+]).addTo(map);
+
+marker.on('click',()=>{
+
+const lang=document.getElementById('language').value;
+
+const name=country[lang];
+const capital=country.capital[lang];
+
+document.getElementById('country-info').innerHTML=
+'<h3>'+name+'</h3>'+
+'<p>'+capital+'</p>';
+
+});
+
+});
+
+// الترجمات
+
 const translations = {
+
 ar:{
-dir:"rtl",title:"اتحاد المغرب العربي",
+dir:"rtl",
+title:"اتحاد المغرب العربي",
 subtitle:"نحو فضاء مغاربي متكامل ومتعاون",
-n1:"التعريف",n2:"الدول",n3:"الاقتصاد",n4:"المستقبل",n5:"الصحراء الغربية",
+nav1:"التعريف",
+nav2:"الدول",
+nav3:"الخريطة",
+nav4:"الاقتصاد",
+nav5:"الصحراء الغربية",
+nav6:"المستقبل",
 heroTitle:"المغرب العربي: تاريخ مشترك ومستقبل مشترك",
 heroText:"من أجل التعاون والتنمية والتكامل بين شعوب المنطقة.",
 aboutTitle:"عن اتحاد المغرب العربي",
-aboutText:"تأسس اتحاد المغرب العربي في 17 فبراير 1989 بمدينة مراكش، ويضم خمس دول مؤسسة هي الجزائر والمغرب وتونس وليبيا وموريتانيا. ويهدف إلى تعزيز التعاون والتكامل الاقتصادي والسياسي والاجتماعي.",
+aboutText:"تأسس اتحاد المغرب العربي في 17 فبراير 1989 بمدينة مراكش. ويضم خمس دول مؤسسة هي الجزائر والمغرب وتونس وليبيا وموريتانيا. ويهدف إلى تعزيز التعاون والتكامل الاقتصادي والسياسي والاجتماعي.",
 countriesTitle:"الدول المؤسسة",
+mapTitle:"🗺️ الخريطة التفاعلية",
+mapDescription:"اضغط على إحدى العواصم لمعرفة اسم الدولة والعاصمة.",
+select:"اختر إحدى العواصم على الخريطة.",
 economyTitle:"المقومات الاقتصادية",
-energy:"موارد النفط والغاز وإمكانات الطاقة المتجددة.",
-agriculture:"الأراضي الزراعية والثروات الحيوانية والسمكية.",
-industry:"فرص تطوير الصناعة والتبادل التجاري والاستثمار.",
-trade:"الموانئ والممرات التجارية والربط الإقليمي.",
+energyTitle:"الطاقة",
+energyText:"موارد النفط والغاز وإمكانات الطاقة المتجددة.",
+agriTitle:"الزراعة",
+agriText:"الأراضي الزراعية والثروات الحيوانية والسمكية.",
+industryTitle:"الصناعة",
+industryText:"فرص تطوير الصناعة والتبادل التجاري والاستثمار.",
+tradeTitle:"التجارة",
+tradeText:"الموانئ والممرات التجارية والربط الإقليمي.",
 saharaTitle:"ملف الصحراء الغربية",
-saharaText:"يُعد ملف الصحراء الغربية من القضايا السياسية الرئيسية في المنطقة. يتناول هذا القسم خلفية النزاع، تطوراته، المواقف الدولية، والجهود الأممية الرامية إلى التوصل إلى حل سياسي.",
+saharaText:"تُعد قضية الصحراء الغربية من القضايا السياسية الرئيسية في المنطقة. يتناول هذا القسم خلفية النزاع وتطوراته والمواقف الدولية والجهود الأممية الرامية إلى التوصل إلى حل سياسي وفق قرارات الأمم المتحدة.",
 futureTitle:"مستقبل التكامل المغاربي",
-futureText:"يمكن للتعاون الإقليمي أن يفتح آفاقاً واسعة للتنمية، وتسهيل التجارة، وتطوير البنية التحتية، وتعزيز الحوار والتفاهم بين شعوب المنطقة.",
+futureText:"يمكن للتعاون الإقليمي أن يفتح آفاقاً واسعة للتنمية وتسهيل التجارة وتطوير البنية التحتية وتعزيز الحوار والتفاهم بين شعوب المنطقة.",
 missionTitle:"رسالتنا",
-missionText:"تقديم معلومات ومعارف موثوقة ومحايدة حول دول المغرب العربي، وتعزيز الحوار والتعاون والتكامل الإقليمي.",
+missionText:"تقديم معلومات ومعارف موثوقة ومحايدة حول دول المغرب العربي وتعزيز الحوار والتعاون والتكامل الإقليمي.",
 footerText:"بوابة معرفية مستقلة حول المغرب العربي"
 },
+
 fr:{
-dir:"ltr",title:"Union du Maghreb Arabe",
-subtitle:"Vers un espace maghrébin intégré et coopératif",
-n1:"Présentation",n2:"Pays",n3:"Économie",n4:"Avenir",n5:"Sahara occidental",
-heroTitle:"Maghreb : une histoire et un avenir communs",
-heroText:"Pour la coopération, le développement et l'intégration régionale.",
+dir:"ltr",
+title:"Union du Maghreb Arabe",
+subtitle:"Vers un espace maghrébin intégré",
+nav1:"Présentation",
+nav2:"Pays",
+nav3:"Carte",
+nav4:"Économie",
+nav5:"Sahara occidental",
+nav6:"Avenir",
+heroTitle:"Le Maghreb : une histoire et un avenir communs",
+heroText:"Pour la coopération et le développement régional.",
 aboutTitle:"À propos de l'Union du Maghreb Arabe",
 aboutText:"L'Union du Maghreb Arabe a été fondée le 17 février 1989 à Marrakech. Elle comprend cinq pays fondateurs : l'Algérie, le Maroc, la Tunisie, la Libye et la Mauritanie.",
 countriesTitle:"Les pays fondateurs",
+mapTitle:"🗺️ Carte interactive",
+mapDescription:"Cliquez sur une capitale pour découvrir le pays.",
+select:"Choisissez une capitale sur la carte.",
 economyTitle:"Potentiel économique",
-energy:"Ressources pétrolières, gazières et énergies renouvelables.",
-agriculture:"Terres agricoles et ressources animales et halieutiques.",
-industry:"Développement industriel, commerce et investissement.",
-trade:"Ports, corridors commerciaux et connexions régionales.",
+energyTitle:"Énergie",
+energyText:"Ressources pétrolières, gazières et énergies renouvelables.",
+agriTitle:"Agriculture",
+agriText:"Terres agricoles et ressources animales et halieutiques.",
+industryTitle:"Industrie",
+industryText:"Développement industriel, commerce et investissement.",
+tradeTitle:"Commerce",
+tradeText:"Ports, corridors commerciaux et connexions régionales.",
 saharaTitle:"Dossier du Sahara occidental",
-saharaText:"Le Sahara occidental est une question politique majeure dans la région. Cette section présente son histoire, les développements du conflit et les efforts internationaux pour une solution politique.",
+saharaText:"Le Sahara occidental constitue une question politique majeure dans la région. Cette section présente le contexte du conflit, ses développements et les efforts des Nations Unies.",
 futureTitle:"L'avenir de l'intégration maghrébine",
-futureText:"La coopération régionale peut favoriser le développement, le commerce, les infrastructures et le dialogue entre les peuples.",
+futureText:"La coopération régionale peut favoriser le développement, le commerce et le dialogue entre les peuples.",
 missionTitle:"Notre mission",
-missionText:"Présenter des informations fiables et neutres sur les pays du Maghreb et encourager la coopération régionale.",
+missionText:"Présenter des informations fiables et neutres sur les pays du Maghreb.",
 footerText:"Portail indépendant consacré au Maghreb"
 },
+
 en:{
-dir:"ltr",title:"Arab Maghreb Union",
-subtitle:"Towards an integrated and cooperative Maghreb",
-n1:"About",n2:"Countries",n3:"Economy",n4:"Future",n5:"Western Sahara",
-heroTitle:"The Maghreb: A shared history and a shared future",
-heroText:"Promoting cooperation, development and regional integration.",
+dir:"ltr",
+title:"Arab Maghreb Union",
+subtitle:"Towards an integrated Maghreb",
+nav1:"About",
+nav2:"Countries",
+nav3:"Map",
+nav4:"Economy",
+nav5:"Western Sahara",
+nav6:"Future",
+heroTitle:"The Maghreb: A shared history and future",
+heroText:"Promoting cooperation and regional development.",
 aboutTitle:"About the Arab Maghreb Union",
 aboutText:"The Arab Maghreb Union was established on 17 February 1989 in Marrakech. Its five founding members are Algeria, Morocco, Tunisia, Libya and Mauritania.",
 countriesTitle:"Founding countries",
+mapTitle:"🗺️ Interactive map",
+mapDescription:"Click on a capital to discover the country.",
+select:"Choose a capital on the map.",
 economyTitle:"Economic potential",
-energy:"Oil, gas resources and renewable energy potential.",
-agriculture:"Agricultural land, livestock and fisheries.",
-industry:"Industrial development, trade and investment opportunities.",
-trade:"Ports, trade corridors and regional connectivity.",
+energyTitle:"Energy",
+energyText:"Oil, gas and renewable energy resources.",
+agriTitle:"Agriculture",
+agriText:"Agricultural land, livestock and fisheries.",
+industryTitle:"Industry",
+industryText:"Industrial development, trade and investment.",
+tradeTitle:"Trade",
+tradeText:"Ports, trade corridors and regional connectivity.",
 saharaTitle:"Western Sahara dossier",
-saharaText:"Western Sahara is one of the region's major political issues. This section covers its background, developments and international efforts towards a political solution.",
+saharaText:"Western Sahara is a major political issue in the region. This section covers the background of the conflict, its developments and United Nations efforts.",
 futureTitle:"The future of Maghreb integration",
-futureText:"Regional cooperation can promote development, trade, infrastructure and dialogue between the peoples of the region.",
+futureText:"Regional cooperation can promote development, trade and dialogue between peoples.",
 missionTitle:"Our mission",
-missionText:"Providing reliable and neutral information about the Maghreb countries and promoting regional dialogue and cooperation.",
+missionText:"Providing reliable and neutral information about the Maghreb countries.",
 footerText:"An independent knowledge portal about the Maghreb"
 },
+
 es:{
-dir:"ltr",title:"Unión del Magreb Árabe",
-subtitle:"Hacia un Magreb integrado y cooperativo",
-n1:"Presentación",n2:"Países",n3:"Economía",n4:"Futuro",n5:"Sáhara Occidental",
+dir:"ltr",
+title:"Unión del Magreb Árabe",
+subtitle:"Hacia un Magreb integrado",
+nav1:"Presentación",
+nav2:"Países",
+nav3:"Mapa",
+nav4:"Economía",
+nav5:"Sáhara Occidental",
+nav6:"Futuro",
 heroTitle:"El Magreb: una historia y un futuro compartidos",
-heroText:"Por la cooperación, el desarrollo y la integración regional.",
+heroText:"Promoviendo la cooperación y el desarrollo regional.",
 aboutTitle:"Sobre la Unión del Magreb Árabe",
 aboutText:"La Unión del Magreb Árabe se fundó el 17 de febrero de 1989 en Marrakech. Sus cinco miembros fundadores son Argelia, Marruecos, Túnez, Libia y Mauritania.",
 countriesTitle:"Países fundadores",
+mapTitle:"🗺️ Mapa interactivo",
+mapDescription:"Haz clic en una capital para descubrir el país.",
+select:"Selecciona una capital en el mapa.",
 economyTitle:"Potencial económico",
-energy:"Recursos de petróleo, gas y energías renovables.",
-agriculture:"Tierras agrícolas, ganadería y pesca.",
-industry:"Desarrollo industrial, comercio e inversión.",
-trade:"Puertos, corredores comerciales y conexiones regionales.",
+energyTitle:"Energía",
+energyText:"Recursos de petróleo, gas y energías renovables.",
+agriTitle:"Agricultura",
+agriText:"Tierras agrícolas, ganadería y pesca.",
+industryTitle:"Industria",
+industryText:"Desarrollo industrial, comercio e inversión.",
+tradeTitle:"Comercio",
+tradeText:"Puertos, corredores comerciales y conexiones regionales.",
 saharaTitle:"Expediente del Sáhara Occidental",
-saharaText:"El Sáhara Occidental es una de las principales cuestiones políticas de la región. Esta sección presenta sus antecedentes, la evolución del conflicto y los esfuerzos internacionales para alcanzar una solución política.",
+saharaText:"El Sáhara Occidental es una cuestión política importante en la región. Esta sección presenta los antecedentes del conflicto y los esfuerzos de las Naciones Unidas.",
 futureTitle:"El futuro de la integración magrebí",
-futureText:"La cooperación regional puede impulsar el desarrollo, el comercio, las infraestructuras y el diálogo entre los pueblos.",
+futureText:"La cooperación regional puede impulsar el desarrollo, el comercio y el diálogo.",
 missionTitle:"Nuestra misión",
-missionText:"Ofrecer información fiable y neutral sobre los países del Magreb y promover el diálogo y la cooperación regional.",
+missionText:"Ofrecer información fiable y neutral sobre los países del Magreb.",
 footerText:"Portal independiente de información sobre el Magreb"
 }
+
 };
 
+// تغيير اللغة
+
 function changeLanguage(){
-const lang=document.getElementById("language").value;
+
+const lang=document.getElementById('language').value;
+
 const t=translations[lang];
+
 document.documentElement.lang=lang;
 document.documentElement.dir=t.dir;
+
 Object.keys(t).forEach(key=>{
-if(key==="dir")return;
+
 const element=document.getElementById(key);
-if(element)element.textContent=t[key];
-});
+
+if(element){
+element.textContent=t[key];
 }
+
+});
+
+document.getElementById('country-info').textContent=t.select;
+
+}
+
 </script>
 
 </body>
